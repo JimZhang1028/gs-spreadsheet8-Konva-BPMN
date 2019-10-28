@@ -47,12 +47,6 @@ module.exports = {
           'file-loader',
         ],
       },
-      {
-        test: /\.(bpmn|cmmn)$/,
-        use: [
-          'file-loader',
-        ],
-      },
     ],
   },
 };
