@@ -772,9 +772,10 @@ function show_diagram_bpmn_03(  diagramXML) {
 
 }
 
-function show_diagram_bpmn_02(  diagramXML) {  // https://github.com/bpmn-io/bpmn-js-examples/blob/master/colors/index.html
+function show_diagram_bpmn_02(  container, diagramXML) {  // https://github.com/bpmn-io/bpmn-js-examples/blob/master/colors/index.html
   let viewer = new BpmnViewer({
-          container: '.' + `${cssPrefix}-svg`
+         // container: '.' + `${cssPrefix}-svg`
+          container: container
   });
 
       viewer.importXML(diagramXML, function() {
@@ -890,7 +891,7 @@ export default class Sheet {
 
 		  //show_diagram_bpmn_01.call(this,  viewer,  text);
 		  //show_diagram_bpmn_01.call(this,  this.viewer,   text);
-		  show_diagram_bpmn_02.call(this,   text);
+		  show_diagram_bpmn_02.call(this,  this.svgEl.el,  text);
 
 		  
 		  /*
