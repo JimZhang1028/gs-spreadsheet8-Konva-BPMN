@@ -17,6 +17,8 @@ import { formulas } from '../core/formula';
 
 //import pizzaDiagram from '../resources/pizza-collaboration.bpmn';
 import BpmnViewer from 'bpmn-js';
+import BpmnJS from 'bpmn-js';
+import BpmnModeler  from 'bpmn-js';
 
 function scrollbarMove() {
   const {
@@ -773,18 +775,44 @@ function show_diagram_bpmn_03(  diagramXML) {
 }
 
 function show_diagram_bpmn_02(  container, diagramXML) {  // https://github.com/bpmn-io/bpmn-js-examples/blob/master/colors/index.html
-  let viewer = new BpmnViewer({
+  //let viewer = new BpmnViewer({
+  let viewer = new BpmnJS({
+  //let viewer = new BpmnModeler({
          // container: '.' + `${cssPrefix}-svg`
-          container: container
+          container: container,
+ keyboard: {
+          bindTo: window
+        }
   });
 
+  var eventBus = viewer.get('eventBus');
+      // you may hook into any of the following events
+      var events = [
+        'element.hover',
+        'element.out',
+        'element.click',
+        'element.dblclick',
+        'element.mousedown',
+        'element.mouseup'
+      ];
+      events.forEach(function(event) {
+        eventBus.on(event, function(e) {
+          // e.element = the model element
+          // e.gfx = the graphical element
+          console.log(event, 'on', e.element.id);
+        });
+      });
+
       viewer.importXML(diagramXML, function() {
+	      /*
         var overlays = viewer.get('overlays'),
             canvas = viewer.get('canvas'),
             elementRegistry = viewer.get('elementRegistry'),
             modeling = viewer.get('modeling');
         // Option 1: Color via Overlay
         var shape = elementRegistry.get('CalmCustomerTask');
+	*/
+	/*
         var $overlayHtml = $('<div class="highlight-overlay">')
                                 .css({
                                   width: shape.width,
@@ -797,14 +825,17 @@ function show_diagram_bpmn_02(  container, diagramXML) {  // https://github.com/
           },
           html: $overlayHtml
         });
+	*/
         // Option 2: Color via BPMN 2.0 Extension
+	 /*
         var elementToColor = elementRegistry.get('SelectAPizzaTask');
         modeling.setColor([ elementToColor ], {
           stroke: 'green',
           fill: 'rgba(0, 80, 0, 0.4)'
         });
+	*/
         // Option 3: Color via Marker + CSS Styling
-        canvas.addMarker('OrderReceivedEvent', 'highlight');
+        //canvas.addMarker('OrderReceivedEvent', 'highlight');
       });
 
 }
@@ -878,6 +909,7 @@ export default class Sheet {
 //    this.viewer = new BpmnViewer({
 //                            container: '.' + `${cssPrefix}-svg`
 //    });
+
 
     fetch('pizza-collaboration.bpmn')
 	  .then((response) => {
@@ -1058,8 +1090,10 @@ export default class Sheet {
   enableOverlayer(flag) {  //GUSA
     if (flag) {
       this.overlayerEl.show();//GUSA 
+      this.table.listening(true);
     } else {
       this.overlayerEl.hide();//GUSA 
+      this.table.listening(false);
     }
   }
 }
