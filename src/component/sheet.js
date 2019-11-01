@@ -18,7 +18,8 @@ import { formulas } from '../core/formula';
 //import pizzaDiagram from '../resources/pizza-collaboration.bpmn';
 import BpmnViewer from 'bpmn-js';
 import BpmnJS from 'bpmn-js';
-import BpmnModeler  from 'bpmn-js';
+//import BpmnModeler  from 'bpmn-js';
+import BpmnModeler from 'bpmn-js/lib/Modeler';
 
 function scrollbarMove() {
   const {
@@ -776,15 +777,12 @@ function show_diagram_bpmn_03(  diagramXML) {
 
 function show_diagram_bpmn_02(  container, diagramXML) {  // https://github.com/bpmn-io/bpmn-js-examples/blob/master/colors/index.html
   //let viewer = new BpmnViewer({
-  let viewer = new BpmnJS({
-  //let viewer = new BpmnModeler({
+  //let viewer = new BpmnJS({
+  let viewer = new BpmnModeler({
          // container: '.' + `${cssPrefix}-svg`
-          container: container,
- keyboard: {
-          bindTo: window
-        }
+          container: container
   });
-
+/*
   var eventBus = viewer.get('eventBus');
       // you may hook into any of the following events
       var events = [
@@ -802,7 +800,7 @@ function show_diagram_bpmn_02(  container, diagramXML) {  // https://github.com/
           console.log(event, 'on', e.element.id);
         });
       });
-
+*/
       viewer.importXML(diagramXML, function() {
 	      /*
         var overlays = viewer.get('overlays'),
