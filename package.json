@@ -42,6 +42,7 @@
     "@babel/register": "^7.0.0",
     "babel-loader": "^8.0.5",
     "clean-webpack-plugin": "^0.1.19",
+    "copy-webpack-plugin": "^4.6.0",
     "codecov": "^3.3.0",
     "css-loader": "^1.0.0",
     "eslint": "^5.5.0",
@@ -63,6 +64,8 @@
   "dependencies": {
     "konva": "^4.0.12",
     "tweakpane": "^1.0.5",
-     "bpmn-js": "^5.1.1"
+     "bpmn-js": "^5.1.1",
+     "diagram-js": "^5.0.0"
+
   }
 }
