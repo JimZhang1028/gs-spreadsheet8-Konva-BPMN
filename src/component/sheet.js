@@ -16,10 +16,11 @@ import { cssPrefix } from '../config';
 import { formulas } from '../core/formula';
 
 //import pizzaDiagram from '../resources/pizza-collaboration.bpmn';
-import BpmnViewer from 'bpmn-js';
+//import BpmnViewer from 'bpmn-js';
 import BpmnJS from 'bpmn-js';
 //import BpmnModeler  from 'bpmn-js';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
+import BpmnViewer from 'bpmn-js/lib/Viewer';
 
 function scrollbarMove() {
   const {
@@ -767,11 +768,154 @@ function sheetInitEvents() {
   });
 }
 
-function show_diagram_bpmn_03(  diagramXML) {
+
+function show_diagram_bpmn_05(  container) {
+      let viewer = new BpmnModeler({
+            /*let viewer = new BpmnJS({ */
+            /*let viewer = new BpmnViewer({ */
+                   container: container
+            });
+           
+     console.log(viewer);
+     var canvas          = viewer.get('canvas');
+     var defaultRenderer = viewer.get('defaultRenderer');
+     var elementFactory  = viewer.get('elementFactory');
+     var  selection       = viewer.get('selection');
+
+    var root = elementFactory.createRoot({type:'bpmn:Lane'});
+    canvas.setRootElement(root);
+
+    var la1 = elementFactory.create('label',{  x: 100, y: 100});
+    var sh1 = elementFactory.create('shape',{ type:'bpmn:Task', x: 350, y: 105,width:70,height: 40});
+    var sh2 = elementFactory.create('shape',{ type:'bpmn:SubProcess', x: 550, y: 205,width:70,height: 40});
+    var at1 = elementFactory.create('shape',{ type:'bpmn:Gateway', x: 750, y: 205,width:70,height: 40});
+
+    canvas.addShape(la1, root);
+    canvas.addShape(sh1, root);
+    canvas.addShape(sh2, root);
+    canvas.addShape(at1, root);
+
+}
+
+function show_diagram_bpmn_04(  container) {
+    let viewer = new BpmnModeler({
+    /*let viewer = new BpmnJS({ */
+    /*let viewer = new BpmnViewer({ */
+           container: container
+    });
+         
+   console.log(viewer);
+   var canvas          = viewer.get('canvas');
+   var defaultRenderer = viewer.get('defaultRenderer');
+   var elementFactory  = viewer.get('elementFactory');
+   var  selection       = viewer.get('selection');
+
+  var root = elementFactory.createRoot({type:'bpmn:Lane'});
+  canvas.setRootElement(root);
+
+  var la1 = elementFactory.create('label',{  x: 100, y: 100});
+  var sh1 = elementFactory.create('shape',{ type:'bpmn:Task', name: 'sh1',x: 350, y: 105,width:70,height: 40});
+  var sh2 = elementFactory.create('shape',{ type:'bpmn:SubProcess', name: 'sh2',x: 550, y: 205,width:70,height: 40});
+  var at1 = elementFactory.create('shape',{ type:'bpmn:Gateway', x: 750, y: 205,width:70,height: 40});
+
+  //var co1 = elementFactory.create('connection',{ type:'bpmndi:BPMNEdge', 
+  //var co1 = elementFactory.create('connection',{ type:'bpmn:MessageFlow', 
+  var co1 = elementFactory.create('connection',{ type:'bpmn:SequenceFlow', 
+
+     waypoints:
+      [
+          {x: 420,y: 125},
+          {x: 480,y: 125},
+          {x: 480,y: 225},
+          {x: 550,y: 225}
+      ],
+     source: sh1, 
+     target: sh2
+   });
+
+/*
+  var co1 = elementFactory.createConnection({ type:'bpmndi:BPMNEdge', 
+     waypoints:[
+          {x: 100,y: 100},
+          {x: 200,y: 200}
+     ], 
+     source: sh1, 
+     target: sh2 
+    });
+*/
+
+  canvas.addShape(la1, root);
+  canvas.addShape(sh1, root);
+  canvas.addShape(sh2, root);
+  canvas.addShape(at1, root);
+  canvas.addConnection(co1, root);
+
+}
+
+function show_diagram_bpmn_03(  container) {
+  //let viewer = new BpmnModeler({
+  //let viewer = new BpmnJS({
   let viewer = new BpmnViewer({
-          container: '.' + `${cssPrefix}-svg`
+          container: container
   });
 
+  var canvas          = viewer.get('canvas');
+  var defaultRenderer = viewer.get('defaultRenderer');
+  var elementFactory  = viewer.get('elementFactory');
+  var  selection       = viewer.get('selection');
+
+
+ // var root = elementFactory.create('root');
+ // var label = elementFactory.create('label');
+
+  var root = elementFactory.createRoot();
+
+  canvas.setRootElement(root);
+
+  var shape1 = elementFactory.createShape({
+      x: 150,
+      y: 100,
+      width: 100,
+      height: 80
+  });
+
+  canvas.addShape(shape1, root);
+  var shape2 = elementFactory.createShape({
+      x: 290,
+      y: 220,
+      width: 100,
+      height: 80
+    });
+
+   canvas.addShape(shape2, root);
+   var connection1 = elementFactory.createConnection({
+       waypoints: [
+              { x: 250, y: 180 },
+              { x: 290, y: 220 }
+             ],
+       source: shape1,
+       target: shape2
+         });
+
+    canvas.addConnection(connection1, root);
+    var shape3 = elementFactory.createShape({
+                        x: 450,
+                        y: 80,
+                        width: 100,
+                        height: 80
+          });
+
+     canvas.addShape(shape3, root);
+     var shape4 = elementFactory.createShape({
+                         x: 425,
+                         y: 50,
+                         width: 300,
+                         height: 200,
+                         isFrame: true
+             });
+
+     canvas.addShape(shape4, root);
+     selection.select(shape3);
 
 }
 
@@ -780,8 +924,10 @@ function show_diagram_bpmn_02(  container, diagramXML) {  // https://github.com/
   //let viewer = new BpmnJS({
   let viewer = new BpmnModeler({
          // container: '.' + `${cssPrefix}-svg`
-          container: container
+          container: container,
   });
+
+
 /*
   var eventBus = viewer.get('eventBus');
       // you may hook into any of the following events
@@ -834,7 +980,7 @@ function show_diagram_bpmn_02(  container, diagramXML) {  // https://github.com/
 	*/
         // Option 3: Color via Marker + CSS Styling
         //canvas.addMarker('OrderReceivedEvent', 'highlight');
-      });
+     });
 
 }
 
@@ -901,15 +1047,11 @@ export default class Sheet {
 */
 
    
-   //===========================================================  BPMN
+   //===========================================================  BPMN  file fetch
    //
-
-//    this.viewer = new BpmnViewer({
-//                            container: '.' + `${cssPrefix}-svg`
-//    });
-
-
-    fetch('pizza-collaboration.bpmn')
+/*
+    //fetch('pizza-collaboration.bpmn')
+    fetch('newDiagram.bpmn')
 	  .then((response) => {
 	      if(response.ok) { 
 	            return response.text(); 
@@ -923,26 +1065,14 @@ export default class Sheet {
 		  //show_diagram_bpmn_01.call(this,  this.viewer,   text);
 		  show_diagram_bpmn_02.call(this,  this.svgEl.el,  text);
 
-		  
-		  /*
-                            var viewer = new BpmnViewer({
-                               container: '.' + `${cssPrefix}-svg`
-                            });
-                  
-			    
-                            viewer.importXML(text, function(err) {
-                  
-                                 if (!err) {
-                                       console.log('success!');
-                                       viewer.get('canvas').zoom('fit-viewport');
-                                  } else {
-                                       console.log('something went wrong:', err);
-                                  }
-                           });
-                   */
 
        })
      .catch((error) => console.log('BPMN fetch: ',error));
+*/
+   //===========================================================  BPMN  interractive
+
+		  //show_diagram_bpmn_03.call(this,  this.svgEl.el );
+		  show_diagram_bpmn_04.call(this,  this.svgEl.el );
 
    //===========================================================
 
@@ -1088,10 +1218,10 @@ export default class Sheet {
   enableOverlayer(flag) {  //GUSA
     if (flag) {
       this.overlayerEl.show();//GUSA 
-      this.table.listening(true);
+//      this.table.listening(true);
     } else {
       this.overlayerEl.hide();//GUSA 
-      this.table.listening(false);
+//      this.table.listening(false);
     }
   }
 }
