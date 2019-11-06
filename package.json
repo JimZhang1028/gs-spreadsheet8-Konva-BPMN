@@ -62,10 +62,10 @@
     "webpack-merge": "^4.1.4"
   },
   "dependencies": {
+    "bpmn-js": "^5.1.1",
+    "bpmn-js-cli": "^1.1.0",
+    "diagram-js": "^5.0.0",
     "konva": "^4.0.12",
-    "tweakpane": "^1.0.5",
-     "bpmn-js": "^5.1.1",
-     "diagram-js": "^5.0.0"
-
+    "tweakpane": "^1.0.5"
   }
 }

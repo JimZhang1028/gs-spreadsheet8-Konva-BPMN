@@ -21,6 +21,7 @@ import BpmnJS from 'bpmn-js';
 //import BpmnModeler  from 'bpmn-js';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import BpmnViewer from 'bpmn-js/lib/Viewer';
+import CliModule from 'bpmn-js-cli';
 
 function scrollbarMove() {
   const {
@@ -769,31 +770,68 @@ function sheetInitEvents() {
 }
 
 
-function show_diagram_bpmn_05(  container) {
+function show_diagram_bpmn_05(  container, diagramXML) {   // BPMN CLI
       let viewer = new BpmnModeler({
             /*let viewer = new BpmnJS({ */
             /*let viewer = new BpmnViewer({ */
-                   container: container
-            });
+             container: container,
+	     additionalModules: [
+		         CliModule
+	      ],
+	     cli: {
+	           bindTo: 'cli'
+	     }
+
+          });
            
-     console.log(viewer);
-     var canvas          = viewer.get('canvas');
-     var defaultRenderer = viewer.get('defaultRenderer');
-     var elementFactory  = viewer.get('elementFactory');
-     var  selection       = viewer.get('selection');
 
-    var root = elementFactory.createRoot({type:'bpmn:Lane'});
-    canvas.setRootElement(root);
-
-    var la1 = elementFactory.create('label',{  x: 100, y: 100});
-    var sh1 = elementFactory.create('shape',{ type:'bpmn:Task', x: 350, y: 105,width:70,height: 40});
-    var sh2 = elementFactory.create('shape',{ type:'bpmn:SubProcess', x: 550, y: 205,width:70,height: 40});
-    var at1 = elementFactory.create('shape',{ type:'bpmn:Gateway', x: 750, y: 205,width:70,height: 40});
-
-    canvas.addShape(la1, root);
-    canvas.addShape(sh1, root);
-    canvas.addShape(sh2, root);
-    canvas.addShape(at1, root);
+     viewer.importXML(diagramXML, function() {
+               var cli = window.cli;
+               console.log(cli.help());
+               console.log(cli.elements());
+               var start = cli.element('StartEvent_1');
+          
+               var gateway = cli.append(
+          	  'StartEvent_1',
+          	   //start,
+          	   'bpmn:ExclusiveGateway',
+          	    '150,0'
+          	);
+                var serviceTask = cli.append(
+          	  gateway,
+          	  'bpmn:ServiceTask',
+          	  '150,0'
+          	);
+                var callActivity = cli.append(
+          	   gateway,
+          	  'bpmn:CallActivity',
+          	  '150,120'
+          	 );
+                var endEvent = cli.append(
+          	   serviceTask,
+          	  'bpmn:EndEvent',
+          	  '150, 0'
+          	 );
+                cli.connect(
+          	  callActivity,
+          	  endEvent,
+          	  'bpmn:SequenceFlow'
+          	 );
+                cli.setLabel(callActivity, 'CallActivity');
+                var gatewayShape = cli.element(gateway);
+                var textAnnotation = cli.create(
+          	   'bpmn:TextAnnotation',
+          	     {
+          	      x: gatewayShape.x - 50,
+          	      y: gatewayShape.y + 150
+          	     },
+          	     gatewayShape.parent
+          	  );
+                cli.setLabel(textAnnotation, 'i-am-text');
+                cli.setLabel(gateway, 'ExclusiveGateway');
+                cli.move(callActivity, { x: 20, y: 30 });
+          
+         });
 
 }
 
@@ -959,7 +997,7 @@ function show_diagram_bpmn_02(  container, diagramXML) {  // https://github.com/
 	/*
         var $overlayHtml = $('<div class="highlight-overlay">')
                                 .css({
-                                  width: shape.width,
+                            ...........: shape.width,
                                   height: shape.height
                                 });
         overlays.add('CalmCustomerTask', {
@@ -1050,8 +1088,8 @@ export default class Sheet {
    //===========================================================  BPMN  file fetch
    //
 /*
-    //fetch('pizza-collaboration.bpmn')
-    fetch('newDiagram.bpmn')
+    fetch('pizza-collaboration.bpmn')
+    //fetch('newDiagram.bpmn')
 	  .then((response) => {
 	      if(response.ok) { 
 	            return response.text(); 
@@ -1072,10 +1110,27 @@ export default class Sheet {
    //===========================================================  BPMN  interractive
 
 		  //show_diagram_bpmn_03.call(this,  this.svgEl.el );
-		  show_diagram_bpmn_04.call(this,  this.svgEl.el );
+		  //show_diagram_bpmn_04.call(this,  this.svgEl.el );
+
+   //===========================================================  BPMN cli
+
+     fetch('test.bpmn')
+     //fetch('start.bpmn')
+    //fetch('newDiagram.bpmn')
+	           .then((response) => {
+		               if(response.ok) {
+			                  return response.text();
+			        } else {
+				          throw new Error();
+				 }
+		         })
+	          .then((text) => {
+
+		  show_diagram_bpmn_05.call(this,  this.svgEl.el , text);
+       })
+     .catch((error) => console.log('BPMN fetch: ',error));
 
    //===========================================================
-
     // resizer
     this.rowResizer = new Resizer(false, data.rows.height);
     this.colResizer = new Resizer(true, data.cols.minWidth);
